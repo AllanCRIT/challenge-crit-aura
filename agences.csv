@@ -1,0 +1,7 @@
+nom,secteur,departement,points,nouveaux_clients,clients_mouvementes,mandats,evolution,last_update
+CRIT Paris,Tertiaire,75,1250,45,120,35,5,14:32
+CRIT Lyon,Industrie,69,1100,40,95,30,-2,14:15
+CRIT Marseille,Logistique,13,950,30,110,25,0,13:58
+CRIT Nantes,Industrie,44,880,35,80,22,3,14:02
+CRIT Lille,Logistique,59,750,22,70,18,-1,12:45
+CRIT Toulouse,Tertiaire,31,600,18,55,12,1,11:20
