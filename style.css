@@ -390,9 +390,9 @@ body {
     box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);
 }
 
-.podium-step.first .podium-pillar { height: 130px; background-color: #FFFDF0; border-top: 4px solid #FFD700; }
-.podium-step.second .podium-pillar { height: 95px; background-color: #F8FAFC; border-top: 4px solid #C0C0C0; }
-.podium-step.third .podium-pillar { height: 70px; background-color: #FAF6F0; border-top: 4px solid #CD7F32; }
+.podium-step.first .podium-pillar { min-height: 130px; background-color: #FFFDF0; border-top: 4px solid #FFD700; }
+.podium-step.second .podium-pillar { min-height: 95px; background-color: #F8FAFC; border-top: 4px solid #C0C0C0; }
+.podium-step.third .podium-pillar { min-height: 90px; background-color: #FAF6F0; border-top: 4px solid #CD7F32; }
 
 .podium-name {
     font-weight: 700;
@@ -401,6 +401,7 @@ body {
     overflow: hidden;
     text-overflow: ellipsis;
     max-width: 120px;
+    flex-shrink: 0;
 }
 
 .podium-score {
@@ -408,6 +409,7 @@ body {
     font-family: var(--font-title);
     font-weight: 800;
     color: var(--crit-dark);
+    flex-shrink: 0;
 }
 
 /* TABLES */
