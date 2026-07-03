@@ -28,8 +28,14 @@ async function loadAllData() {
     const cacheBuster = `?t=${new Date().getTime()}`;
     try {
         const [agenciesRes, boostersRes] = await Promise.all([
-            fetch(`agences.csv${cacheBuster}`).then(r => r.text()),
-            fetch(`boosters.csv${cacheBuster}`).then(r => r.text())
+            fetch(`agences.csv${cacheBuster}`).then(r => {
+                if (!r.ok) throw new Error("Fichier agences.csv introuvable");
+                return r.text();
+            }),
+            fetch(`boosters.csv${cacheBuster}`).then(r => {
+                if (!r.ok) throw new Error("Fichier boosters.csv introuvable");
+                return r.text();
+            })
         ]);
         
         agenciesData = parseCSV(agenciesRes);
@@ -62,7 +68,7 @@ function parseCSV(text) {
             if (val !== undefined && val !== "" && !isNaN(val)) {
                 obj[header] = Number(val);
             } else {
-                obj[header] = val;
+                obj[header] = val || "";
             }
         });
         return obj;
@@ -98,7 +104,15 @@ function processAndRender() {
 
 // 1. STATISTIQUES GLOBALES DU DASHBOARD
 function renderGlobalStats(data) {
-    if (data.length === 0) return;
+    if (data.length === 0) {
+        document.getElementById('stat-total-points').innerText = "-";
+        document.getElementById('stat-total-agencies').innerText = "0";
+        document.getElementById('stat-total-nc').innerText = "-";
+        document.getElementById('stat-total-cm').innerText = "-";
+        document.getElementById('stat-total-mandats').innerText = "-";
+        document.getElementById('stat-leader-name').innerText = "Aucun";
+        return;
+    }
 
     const totalPoints = data.reduce((acc, curr) => acc + (curr.points || 0), 0);
     const totalNC = data.reduce((acc, curr) => acc + (curr.nouveaux_clients || 0), 0);
@@ -128,12 +142,10 @@ function renderActiveBoosters() {
         const end = new Date(booster.date_fin);
 
         if (now >= start && now <= end) {
-            // Création du composant Booster Actif
             const banner = document.createElement('div');
             banner.className = 'booster-banner';
             banner.style.background = `linear-gradient(135deg, ${booster.couleur || 'var(--crit-orange)'} 0%, var(--crit-dark) 100%)`;
             
-            // Calcul du temps restant simplifié
             const diffMs = end - now;
             const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
             const diffDays = Math.floor(diffHours / 24);
@@ -164,7 +176,6 @@ function handleCategoryVisibility() {
     document.getElementById('box-cm').style.display = (view === "Tous" || view === "cm") ? "flex" : "none";
     document.getElementById('box-mandats').style.display = (view === "Tous" || view === "mandats") ? "flex" : "none";
 
-    // Adapter la grille si un seul élément est affiché
     const wrapper = document.getElementById('leaderboards-wrapper');
     if (view !== "Tous") {
         wrapper.style.gridTemplateColumns = "1fr";
@@ -187,18 +198,17 @@ function renderSingleLeaderboard(data, keyMetric, elementSuffix) {
         list.sort((a, b) => (b.evolution || 0) - (a.evolution || 0));
     }
 
-    // Gestion du niveau d'affichage (Top 10, Top 20, Complet)
+    // On extrait TOUJOURS le vrai top 3 basé sur le tri actuel, peu importe la limite d'affichage
+    const top3 = list.slice(0, 3);
+
+    // Gestion de la limite d'affichage basse (Top 10, Top 20, Complet) pour la table basse
     const limitVal = filterLimit.value;
     if (limitVal !== "complet") {
         const size = Number(limitVal);
         list = list.slice(0, size);
     }
 
-    // Extraction du Top 3 pour le Podium
-    const top3 = list.slice(0, 3);
-    const rest = list.slice(3);
-
-    // Rendu du Podium physique
+    // Rendu du Podium physique sécurisé
     renderPodium(top3, keyMetric, `podium-${elementSuffix}`);
 
     // Rendu du Reste de la Table
@@ -208,7 +218,6 @@ function renderSingleLeaderboard(data, keyMetric, elementSuffix) {
     list.forEach((agency, index) => {
         const rank = index + 1;
         
-        // Template d'évolution de classement iconographique
         let evolIcon = `<span class="evol-stable"><i class="fa-solid fa-minus"></i></span>`;
         if ((agency.evolution || 0) > 0) {
             evolIcon = `<span class="evol-up"><i class="fa-solid fa-caret-up"></i> +${agency.evolution}</span>`;
@@ -230,23 +239,32 @@ function renderSingleLeaderboard(data, keyMetric, elementSuffix) {
     });
 }
 
-// 5. RENDU LOGIQUE DU PODIUM (Ordre visuel : 2ème, 1er, 3ème)
+// 5. RENDU LOGIQUE DU PODIUM PROTEGÉ CONTRE LES INDEX NULL
 function renderPodium(topAgencies, keyMetric, targetId) {
     const container = document.getElementById(targetId);
     container.innerHTML = "";
 
     if (topAgencies.length === 0) return;
 
-    // Association index réel -> position podium structurelle
+    // Ordre d'affichage visuel standardisé pour un podium physique : 2ème à gauche, 1er au milieu, 3ème à droite
     const positions = [
-        { index: 1, class: 'second', num: '2' }, // Index 1 = Deuxième (Gauche)
-        { index: 0, class: 'first', num: '1' },  // Index 0 = Premier (Milieu)
-        { index: 2, class: 'third', num: '3' }   // Index 2 = Troisième (Droite)
+        { index: 1, class: 'second', num: '2' }, 
+        { index: 0, class: 'first', num: '1' },  
+        { index: 2, class: 'third', num: '3' }   
     ];
 
     positions.forEach(pos => {
         const item = topAgencies[pos.index];
-        if (!item) return; // Si moins de 3 agences matchées
+        
+        // CORRECTION DE SÉCURITÉ CRITIQUE : Si l'agence n'existe pas (ex: moins de 3 résultats filtrés), 
+        // on génère une colonne vide transparente pour préserver l'équilibre visuel du CSS sans planter.
+        if (!item) {
+            const emptyStep = document.createElement('div');
+            emptyStep.className = `podium-step ${pos.class}`;
+            emptyStep.style.opacity = "0"; // Invisible mais occupe l'espace
+            container.appendChild(emptyStep);
+            return; 
+        }
 
         const step = document.createElement('div');
         step.className = `podium-step ${pos.class}`;
@@ -255,7 +273,7 @@ function renderPodium(topAgencies, keyMetric, targetId) {
             ${pos.class === 'first' ? '<div class="podium-crown"><i class="fa-solid fa-crown"></i></div>' : ''}
             <div class="podium-avatar">${pos.num}</div>
             <div class="podium-pillar">
-                <span class="podium-name">${item.nom}</span>
+                <span class="podium-name" title="${item.nom || ''}">${item.nom || '—'}</span>
                 <span class="podium-score">${(item[keyMetric] || 0).toLocaleString()}</span>
             </div>
         `;
@@ -263,7 +281,7 @@ function renderPodium(topAgencies, keyMetric, targetId) {
     });
 }
 
-// CONFIGURATION DES LISTENERS SUR LES FILTRES (ACTION IMMEDIATE)
+// CONFIGURATION DES LISTENERS SUR LES FILTRES
 function setupEventListeners() {
     searchInput.addEventListener('input', processAndRender);
     filterSecteur.addEventListener('change', processAndRender);
@@ -271,7 +289,6 @@ function setupEventListeners() {
     filterSort.addEventListener('change', processAndRender);
     filterLimit.addEventListener('change', processAndRender);
 
-    // Bouton plein écran ergonomique pour TV de direction
     fullscreenBtn.addEventListener('click', () => {
         if (!document.fullscreenElement) {
             document.documentElement.requestFullscreen().catch(err => {
