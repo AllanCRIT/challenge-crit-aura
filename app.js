@@ -19,11 +19,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
 function initApp() {
     loadAllData();
-    // Boucle d'actualisation automatique toutes les 30 secondes
     setInterval(loadAllData, 30000);
 }
 
-// RECUPERATION DES DONNEES (ANTI-CACHE INTEGRÉ)
+// RECUPERATION DES DONNEES
 async function loadAllData() {
     const cacheBuster = `?t=${new Date().getTime()}`;
     try {
@@ -50,21 +49,19 @@ async function loadAllData() {
     }
 }
 
-// PARSER CSV COMPATIBLE EXCEL (VIRGULE OU POINT-VIRGULE)
+// PARSER CSV
 function parseCSV(text) {
     const lines = text.split(/\r?\n/).filter(line => line.trim() !== "");
     if (lines.length === 0) return [];
     
-    // Détection du séparateur (, ou ;)
     const separator = lines[0].includes(';') ? ';' : ',';
-    const headers = lines[0].split(separator).map(h => h.trim().replace(/^"|"$/g, ''));
+    const headers = lines[0].split(separator).map(h => h.trim().replace(/^"|"$/g, '').toLowerCase());
     
     return lines.slice(1).map(line => {
         const values = line.split(separator).map(v => v.trim().replace(/^"|"$/g, ''));
         const obj = {};
         headers.forEach((header, i) => {
             let val = values[i];
-            // Conversion numérique automatique si applicable
             if (val !== undefined && val !== "" && !isNaN(val)) {
                 obj[header] = Number(val);
             } else {
@@ -75,9 +72,8 @@ function parseCSV(text) {
     });
 }
 
-// FILTRES ET ENVOI VERS AFFICHAGE
+// FILTRES
 function processAndRender() {
-    // 1. Filtrage Global selon Recherche et Secteur
     const searchVal = searchInput.value.toLowerCase().trim();
     const secteurVal = filterSecteur.value;
 
@@ -87,39 +83,24 @@ function processAndRender() {
         return matchSearch && matchSecteur;
     });
 
-    // 2. Traitement des Global Stats (basées sur la sélection filtrée ou globale)
     renderGlobalStats(filteredAgencies);
-
-    // 3. Gestion des Boosters Actifs
     renderActiveBoosters();
-
-    // 4. Gestion de la visibilité des colonnes/classements
     handleCategoryVisibility();
 
-    // 5. Génération et Tri des 3 Classements Distincts
     renderSingleLeaderboard(filteredAgencies, 'nouveaux_clients', 'nc');
     renderSingleLeaderboard(filteredAgencies, 'clients_mouvementes', 'cm');
     renderSingleLeaderboard(filteredAgencies, 'mandats', 'mandats');
 }
 
-// 1. STATISTIQUES GLOBALES DU DASHBOARD
+// STATISTIQUES GLOBALES
 function renderGlobalStats(data) {
-    if (data.length === 0) {
-        document.getElementById('stat-total-points').innerText = "-";
-        document.getElementById('stat-total-agencies').innerText = "0";
-        document.getElementById('stat-total-nc').innerText = "-";
-        document.getElementById('stat-total-cm').innerText = "-";
-        document.getElementById('stat-total-mandats').innerText = "-";
-        document.getElementById('stat-leader-name').innerText = "Aucun";
-        return;
-    }
+    if (data.length === 0) return;
 
     const totalPoints = data.reduce((acc, curr) => acc + (curr.points || 0), 0);
     const totalNC = data.reduce((acc, curr) => acc + (curr.nouveaux_clients || 0), 0);
     const totalCM = data.reduce((acc, curr) => acc + (curr.clients_mouvementes || 0), 0);
     const totalMandats = data.reduce((acc, curr) => acc + (curr.mandats || 0), 0);
     
-    // Trouver le leader absolu (aux points globaux)
     const leader = [...data].sort((a,b) => (b.points || 0) - (a.points || 0))[0];
 
     document.getElementById('stat-total-points').innerText = totalPoints.toLocaleString();
@@ -130,11 +111,10 @@ function renderGlobalStats(data) {
     document.getElementById('stat-leader-name').innerText = leader ? leader.nom : "Aucun";
 }
 
-// 2. BANDEAU DES BOOSTERS DYNAMIQUES
+// BOOSTERS
 function renderActiveBoosters() {
     const container = document.getElementById('boosters-container');
     container.innerHTML = "";
-    
     const now = new Date();
 
     boostersData.forEach(booster => {
@@ -169,7 +149,7 @@ function renderActiveBoosters() {
     });
 }
 
-// 3. AFFICHAGE SELECTIF DES CLASSEMENTS
+// VISIBILITE
 function handleCategoryVisibility() {
     const view = filterCategory.value;
     document.getElementById('box-nc').style.display = (view === "Tous" || view === "nc") ? "flex" : "none";
@@ -184,11 +164,11 @@ function handleCategoryVisibility() {
     }
 }
 
-// 4. GENERATEUR UNIQUE DE TABLEAU DE CLASSEMENT
+// GENERATEUR DE CLASSEMENT ET PODIUM
 function renderSingleLeaderboard(data, keyMetric, elementSuffix) {
     let list = [...data];
 
-    // Algorithme de tri dynamique personnalisé
+    // Tri dynamique
     const sortCriteria = filterSort.value;
     if (sortCriteria === "score") {
         list.sort((a, b) => (b[keyMetric] || 0) - (a[keyMetric] || 0));
@@ -198,26 +178,50 @@ function renderSingleLeaderboard(data, keyMetric, elementSuffix) {
         list.sort((a, b) => (b.evolution || 0) - (a.evolution || 0));
     }
 
-    // On extrait TOUJOURS le vrai top 3 basé sur le tri actuel, peu importe la limite d'affichage
-    const top3 = list.slice(0, 3);
+    // --- LE PODIUM (Prend toujours les 3 premiers du classement trié) ---
+    const containerPodium = document.getElementById(`podium-${elementSuffix}`);
+    containerPodium.innerHTML = "";
 
-    // Gestion de la limite d'affichage basse (Top 10, Top 20, Complet) pour la table basse
-    const limitVal = filterLimit.value;
-    if (limitVal !== "complet") {
-        const size = Number(limitVal);
-        list = list.slice(0, size);
+    if (list.length > 0) {
+        const positions = [
+            { index: 1, class: 'second', num: '2' }, 
+            { index: 0, class: 'first', num: '1' },  
+            { index: 2, class: 'third', num: '3' }   
+        ];
+
+        positions.forEach(pos => {
+            const item = list[pos.index];
+            const step = document.createElement('div');
+            step.className = `podium-step ${pos.class}`;
+
+            if (!item) {
+                step.style.opacity = "0"; // Équilibre si moins de 3 agences au total
+            } else {
+                const name = item.nom || item.Nom || "Inconnu";
+                step.innerHTML = `
+                    ${pos.class === 'first' ? '<div class="podium-crown"><i class="fa-solid fa-crown"></i></div>' : ''}
+                    <div class="podium-avatar">${pos.num}</div>
+                    <div class="podium-pillar">
+                        <span class="podium-name" title="${name}">${name}</span>
+                        <span class="podium-score">${(item[keyMetric] || 0).toLocaleString()}</span>
+                    </div>
+                `;
+            }
+            containerPodium.appendChild(step);
+        });
     }
 
-    // Rendu du Podium physique sécurisé
-    renderPodium(top3, keyMetric, `podium-${elementSuffix}`);
+    // --- LA TABLE BASSE ---
+    const limitVal = filterLimit.value;
+    if (limitVal !== "complet") {
+        list = list.slice(0, Number(limitVal));
+    }
 
-    // Rendu du Reste de la Table
     const tbody = document.getElementById(`table-${elementSuffix}`);
     tbody.innerHTML = "";
 
     list.forEach((agency, index) => {
         const rank = index + 1;
-        
         let evolIcon = `<span class="evol-stable"><i class="fa-solid fa-minus"></i></span>`;
         if ((agency.evolution || 0) > 0) {
             evolIcon = `<span class="evol-up"><i class="fa-solid fa-caret-up"></i> +${agency.evolution}</span>`;
@@ -239,49 +243,7 @@ function renderSingleLeaderboard(data, keyMetric, elementSuffix) {
     });
 }
 
-// 5. RENDU LOGIQUE DU PODIUM PROTEGÉ CONTRE LES INDEX NULL
-function renderPodium(topAgencies, keyMetric, targetId) {
-    const container = document.getElementById(targetId);
-    container.innerHTML = "";
-
-    if (topAgencies.length === 0) return;
-
-    // Ordre d'affichage visuel standardisé pour un podium physique : 2ème à gauche, 1er au milieu, 3ème à droite
-    const positions = [
-        { index: 1, class: 'second', num: '2' }, 
-        { index: 0, class: 'first', num: '1' },  
-        { index: 2, class: 'third', num: '3' }   
-    ];
-
-    positions.forEach(pos => {
-        const item = topAgencies[pos.index];
-        
-        // CORRECTION DE SÉCURITÉ CRITIQUE : Si l'agence n'existe pas (ex: moins de 3 résultats filtrés), 
-        // on génère une colonne vide transparente pour préserver l'équilibre visuel du CSS sans planter.
-        if (!item) {
-            const emptyStep = document.createElement('div');
-            emptyStep.className = `podium-step ${pos.class}`;
-            emptyStep.style.opacity = "0"; // Invisible mais occupe l'espace
-            container.appendChild(emptyStep);
-            return; 
-        }
-
-        const step = document.createElement('div');
-        step.className = `podium-step ${pos.class}`;
-        
-        step.innerHTML = `
-            ${pos.class === 'first' ? '<div class="podium-crown"><i class="fa-solid fa-crown"></i></div>' : ''}
-            <div class="podium-avatar">${pos.num}</div>
-            <div class="podium-pillar">
-                <span class="podium-name" title="${item.nom || ''}">${item.nom || '—'}</span>
-                <span class="podium-score">${(item[keyMetric] || 0).toLocaleString()}</span>
-            </div>
-        `;
-        container.appendChild(step);
-    });
-}
-
-// CONFIGURATION DES LISTENERS SUR LES FILTRES
+// LISTENERS
 function setupEventListeners() {
     searchInput.addEventListener('input', processAndRender);
     filterSecteur.addEventListener('change', processAndRender);
