@@ -1,36 +1,36 @@
-nom;secteur;departement;points;nouveaux_clients;evolution_nc;clients_mouvementes;evolution_cm;mandats;evolution_mandats
-CRIT ANDREZIEUX BOUTHEON,GÃ©nÃ©raliste,42,27,1,24,2,0,0,0
-CRIT ANNECY,GÃ©nÃ©raliste,74,25,1,23,1,0,0,0
-CRIT BOURG-EN-BRESSE,GÃ©nÃ©raliste,01,0,0,0,0,0,0,0
-CRIT BOURGOIN-JALLIEU,GÃ©nÃ©raliste,38,0,0,0,0,0,0,0
-CRIT BRIGNAIS,GÃ©nÃ©raliste,69,12,0,12,0,0,0,0
-CRIT CHAMBERY Ind - Log - BTP,GÃ©nÃ©raliste,73,25,0,25,0,0,0,0
-CRIT CHANAS,GÃ©nÃ©raliste,38,0,0,0,0,0,0,0
-CRIT CLERMONT-FERRAND BTP,BTP,63,2,0,0,2,0,0,0
-CRIT CLERMONT-FERRAND BTP 2nd oeuvre,BTP,63,1,0,0,1,0,0,0
-CRIT CLERMONT-FERRAND Indus AÃ©ro Distrib,Industrie,63,27,0,24,3,0,0,0
-CRIT CLERMONT-FERRAND Logistique,GÃ©nÃ©raliste,63,23,0,21,2,0,0,0
-CRIT CLERMONT-FERRAND TERTIAIRE support & Cadres,Tertiaire,63,3,0,0,3,0,0,0
-CRIT DECINES,GÃ©nÃ©raliste,69,27,1,25,1,0,0,0
-CRIT GRENOBLE Industrie-BTP-Logistique,GÃ©nÃ©raliste,38,4,0,0,4,0,0,0
-CRIT GRENOBLE Tertiaire-IngÃ©nierie-Cadres,Tertiaire,38,0,0,0,0,0,0,0
-CRIT ISSOIRE,GÃ©nÃ©raliste,63,40,1,32,7,0,0,0
-CRIT L'ARBRESLE,GÃ©nÃ©raliste,69,1,0,0,1,0,0,0
-CRIT LE PUY EN VELAY,GÃ©nÃ©raliste,43,23,1,22,0,0,0,0
-CRIT LIMAS,GÃ©nÃ©raliste,69,13,1,12,0,0,0,0
-CRIT LYON,Tertiaire,69,20,0,19,1,0,0,0
-CRIT LYON BTP Second oeuvre,BTP,69,0,0,0,0,0,0,0
-CRIT LYON Ã‰vÃ©nementiel,EvÃ¨nementiel,69,0,0,0,0,0,0,0
-CRIT LYON Experts & Cadres,Experts & Cadres,69,0,0,0,0,0,0,0
-CRIT MONISTROL-SUR-LOIRE,GÃ©nÃ©raliste,43,5,0,0,5,0,0,0
-CRIT MONTELIMAR,GÃ©nÃ©raliste,26,18,0,18,0,0,0,0
-CRIT MONTLUCON,GÃ©nÃ©raliste,03,19,0,17,2,0,0,0
-CRIT RIOM,Industrie,63,26,0,24,2,0,0,0
-CRIT ROANNE,GÃ©nÃ©raliste,42,4,0,0,4,0,0,0
-CRIT SAINT QUENTIN FALLAVIER,GÃ©nÃ©raliste,38,3,0,0,3,0,0,0
-CRIT SAINT VULBAS NuclÃ©aire,GÃ©nÃ©raliste,01,35,1,33,1,0,0,0
-CRIT THIERS,GÃ©nÃ©raliste,63,29,0,27,2,0,0,0
-CRIT VALENCE,GÃ©nÃ©raliste,26,29,1,28,0,0,0,0
-CRIT VICHY,GÃ©nÃ©raliste,03,20,0,18,2,0,0,0
-CRIT VIENNE,GÃ©nÃ©raliste,38,25,0,24,1,0,0,0
-CRIT VOIRON,GÃ©nÃ©raliste,38,11,0,11,0,0,0,0
+"nom;secteur;departement;points;nouveaux_clients;evolution_nc;clients_mouvementes;evolution_cm;mandats;evolution_mandats"
+"CRIT ANDREZIEUX BOUTHEON;Généraliste;42;138;6;1;120;24;12;2"
+"CRIT ANNECY;Généraliste;74;126;5;1;115;23;6;1"
+"CRIT BOURG-EN-BRESSE;Généraliste;01;0;0;0;0;0;0;0"
+"CRIT BOURGOIN-JALLIEU;Généraliste;38;0;0;0;0;0;0;0"
+"CRIT BRIGNAIS;Généraliste;69;60;0;0;60;12;0;0"
+"CRIT CHAMBERY Ind - Log - BTP;Généraliste;73;125;0;0;125;25;0;0"
+"CRIT CHANAS;Généraliste;38;0;0;0;0;0;0;0"
+"CRIT CLERMONT-FERRAND BTP;BTP;63;12;0;0;0;0;12;2"
+"CRIT CLERMONT-FERRAND BTP 2nd oeuvre;BTP;63;6;0;0;0;0;6;1"
+"CRIT CLERMONT-FERRAND Indus Aéro Distrib;Industrie;63;138;0;0;120;24;18;3"
+"CRIT CLERMONT-FERRAND Logistique;Généraliste;63;117;0;0;105;21;12;2"
+"CRIT CLERMONT-FERRAND TERTIAIRE support & Cadres;Tertiaire;63;18;0;0;0;0;18;3"
+"CRIT DECINES;Généraliste;69;135;5;1;125;25;5;1"
+"CRIT GRENOBLE Industrie-BTP-Logistique;Généraliste;38;20;0;0;0;0;20;4"
+"CRIT GRENOBLE Tertiaire-Ingénierie-Cadres;Tertiaire;38;0;0;0;0;0;0;0"
+"CRIT ISSOIRE;Généraliste;63;207;5;1;160;32;42;7"
+"CRIT L'ARBRESLE;Généraliste;69;6;0;0;0;0;6;1"
+"CRIT LE PUY EN VELAY;Généraliste;43;115;5;1;110;22;0;0"
+"CRIT LIMAS;Généraliste;69;65;5;1;60;12;0;0"
+"CRIT LYON;Tertiaire;69;100;0;0;95;19;5;1"
+"CRIT LYON BTP Second oeuvre;BTP;69;0;0;0;0;0;0;0"
+"CRIT LYON Événementiel;Evènementiel;69;0;0;0;0;0;0;0"
+"CRIT LYON Experts & Cadres;Experts & Cadres;69;0;0;0;0;0;0;0"
+"CRIT MONISTROL-SUR-LOIRE;Généraliste;43;30;0;0;0;0;30;5"
+"CRIT MONTELIMAR;Généraliste;26;90;0;0;90;18;0;0"
+"CRIT MONTLUCON;Généraliste;03;97;0;0;85;17;12;2"
+"CRIT RIOM;Industrie;63;132;0;0;120;24;12;2"
+"CRIT ROANNE;Généraliste;42;24;0;0;0;0;24;4"
+"CRIT SAINT QUENTIN FALLAVIER;Généraliste;38;18;0;0;0;0;18;3"
+"CRIT SAINT VULBAS Nucléaire;Généraliste;01;176;5;1;165;33;6;1"
+"CRIT THIERS;Généraliste;63;147;0;0;135;27;12;2"
+"CRIT VALENCE;Généraliste;26;145;5;1;140;28;0;0"
+"CRIT VICHY;Généraliste;03;102;0;0;90;18;12;2"
+"CRIT VIENNE;Généraliste;38;126;0;0;120;24;6;1"
+"CRIT VOIRON;Généraliste;38;55;0;0;55;11;0;0"
