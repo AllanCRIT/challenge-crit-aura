@@ -36,10 +36,10 @@ async function loadAllData() {
                 return r.text();
             })
         ]);
-        
+
         agenciesData = parseCSV(agenciesRes);
         boostersData = parseCSV(boostersRes);
-        
+
         processAndRender();
         const now = new Date();
         updateTimestamp.innerHTML = `<i class="fa-solid fa-check-double" style="color:#48BB78"></i> Mis à jour à ${String(now.getHours()).padStart(2, '0')}h${String(now.getMinutes()).padStart(2, '0')}`;
@@ -53,10 +53,10 @@ async function loadAllData() {
 function parseCSV(text) {
     const lines = text.split(/\r?\n/).filter(line => line.trim() !== "");
     if (lines.length === 0) return [];
-    
+
     const separator = lines[0].includes(';') ? ';' : ',';
     const headers = lines[0].split(separator).map(h => h.trim().replace(/^"|"$/g, '').toLowerCase());
-    
+
     return lines.slice(1).map(line => {
         const values = line.split(separator).map(v => v.trim().replace(/^"|"$/g, ''));
         const obj = {};
@@ -87,9 +87,10 @@ function processAndRender() {
     renderActiveBoosters();
     handleCategoryVisibility();
 
-    renderSingleLeaderboard(filteredAgencies, 'nouveaux_clients', 'nc');
-    renderSingleLeaderboard(filteredAgencies, 'clients_mouvementes', 'cm');
-    renderSingleLeaderboard(filteredAgencies, 'mandats', 'mandats');
+    // On passe la clef de metrique ET la clef d'evolution correspondante
+    renderSingleLeaderboard(filteredAgencies, 'nouveaux_clients', 'evolution_nc', 'nc');
+    renderSingleLeaderboard(filteredAgencies, 'clients_mouvementes', 'evolution_cm', 'cm');
+    renderSingleLeaderboard(filteredAgencies, 'mandats', 'evolution_mandats', 'mandats');
 }
 
 // STATISTIQUES GLOBALES
@@ -100,7 +101,7 @@ function renderGlobalStats(data) {
     const totalNC = data.reduce((acc, curr) => acc + (curr.nouveaux_clients || 0), 0);
     const totalCM = data.reduce((acc, curr) => acc + (curr.clients_mouvementes || 0), 0);
     const totalMandats = data.reduce((acc, curr) => acc + (curr.mandats || 0), 0);
-    
+
     const leader = [...data].sort((a,b) => (b.points || 0) - (a.points || 0))[0];
 
     document.getElementById('stat-total-points').innerText = totalPoints.toLocaleString();
@@ -125,7 +126,7 @@ function renderActiveBoosters() {
             const banner = document.createElement('div');
             banner.className = 'booster-banner';
             banner.style.background = `linear-gradient(135deg, ${booster.couleur || 'var(--crit-orange)'} 0%, var(--crit-dark) 100%)`;
-            
+
             const diffMs = end - now;
             const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
             const diffDays = Math.floor(diffHours / 24);
@@ -165,8 +166,11 @@ function handleCategoryVisibility() {
 }
 
 // GENERATEUR DE CLASSEMENT ET PODIUM
-function renderSingleLeaderboard(data, keyMetric, elementSuffix) {
+function renderSingleLeaderboard(data, keyMetric, keyEvolution, elementSuffix) {
     let list = [...data];
+
+    // Recupération dynamique de l'évolution spécifique (ex: evolution_nc) ou fallback sur evolution générale
+    const getEvol = (agency) => agency[keyEvolution] !== undefined ? (agency[keyEvolution] || 0) : (agency.evolution || 0);
 
     // Tri dynamique
     const sortCriteria = filterSort.value;
@@ -175,10 +179,10 @@ function renderSingleLeaderboard(data, keyMetric, elementSuffix) {
     } else if (sortCriteria === "alpha") {
         list.sort((a, b) => (a.nom || "").localeCompare(b.nom || ""));
     } else if (sortCriteria === "progression") {
-        list.sort((a, b) => (b.evolution || 0) - (a.evolution || 0));
+        list.sort((a, b) => getEvol(b) - getEvol(a));
     }
 
-    // --- LE PODIUM (Prend toujours les 3 premiers du classement trié) ---
+    // --- LE PODIUM ---
     const containerPodium = document.getElementById(`podium-${elementSuffix}`);
     containerPodium.innerHTML = "";
 
@@ -195,7 +199,7 @@ function renderSingleLeaderboard(data, keyMetric, elementSuffix) {
             step.className = `podium-step ${pos.class}`;
 
             if (!item) {
-                step.style.opacity = "0"; // Équilibre si moins de 3 agences au total
+                step.style.opacity = "0";
             } else {
                 const name = item.nom || item.Nom || "Inconnu";
                 step.innerHTML = `
@@ -222,11 +226,13 @@ function renderSingleLeaderboard(data, keyMetric, elementSuffix) {
 
     list.forEach((agency, index) => {
         const rank = index + 1;
+        const evolVal = getEvol(agency);
+
         let evolIcon = `<span class="evol-stable"><i class="fa-solid fa-minus"></i></span>`;
-        if ((agency.evolution || 0) > 0) {
-            evolIcon = `<span class="evol-up"><i class="fa-solid fa-caret-up"></i> +${agency.evolution}</span>`;
-        } else if ((agency.evolution || 0) < 0) {
-            evolIcon = `<span class="evol-down"><i class="fa-solid fa-caret-down"></i> ${agency.evolution}</span>`;
+        if (evolVal > 0) {
+            evolIcon = `<span class="evol-up"><i class="fa-solid fa-caret-up"></i> +${evolVal}</span>`;
+        } else if (evolVal < 0) {
+            evolIcon = `<span class="evol-down"><i class="fa-solid fa-caret-down"></i> ${evolVal}</span>`;
         }
 
         const tr = document.createElement('tr');
