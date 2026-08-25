@@ -1,7 +1,36 @@
 nom,secteur,departement,points,nouveaux_clients,clients_mouvementes,mandats,evolution,last_update
-CRIT Paris,Tertiaire,75,1250,45,120,35,5,14:32
-CRIT Lyon,Industrie,69,1100,40,95,30,-2,14:15
-CRIT Marseille,Logistique,13,950,30,110,25,0,13:58
-CRIT Nantes,Industrie,44,880,35,80,22,3,14:02
-CRIT Lille,Logistique,59,750,22,70,18,-1,12:45
-CRIT Toulouse,Tertiaire,31,600,18,55,12,1,11:20
+CRIT ANDREZIEUX BOUTHEON,Généraliste,42,27,1,24,2,0,0,0
+CRIT ANNECY,Généraliste,74,25,1,23,1,0,0,0
+CRIT BOURG-EN-BRESSE,Généraliste,01,0,0,0,0,0,0,0
+CRIT BOURGOIN-JALLIEU,Généraliste,38,0,0,0,0,0,0,0
+CRIT BRIGNAIS,Généraliste,69,12,0,12,0,0,0,0
+CRIT CHAMBERY Ind - Log - BTP,Généraliste,73,25,0,25,0,0,0,0
+CRIT CHANAS,Généraliste,38,0,0,0,0,0,0,0
+CRIT CLERMONT-FERRAND BTP,BTP,63,2,0,0,2,0,0,0
+CRIT CLERMONT-FERRAND BTP 2nd oeuvre,BTP,63,1,0,0,1,0,0,0
+CRIT CLERMONT-FERRAND Indus Aéro Distrib,Industrie,63,27,0,24,3,0,0,0
+CRIT CLERMONT-FERRAND Logistique,Généraliste,63,23,0,21,2,0,0,0
+CRIT CLERMONT-FERRAND TERTIAIRE support & Cadres,Tertiaire,63,3,0,0,3,0,0,0
+CRIT DECINES,Généraliste,69,27,1,25,1,0,0,0
+CRIT GRENOBLE Industrie-BTP-Logistique,Généraliste,38,4,0,0,4,0,0,0
+CRIT GRENOBLE Tertiaire-Ingénierie-Cadres,Tertiaire,38,0,0,0,0,0,0,0
+CRIT ISSOIRE,Généraliste,63,40,1,32,7,0,0,0
+CRIT L'ARBRESLE,Généraliste,69,1,0,0,1,0,0,0
+CRIT LE PUY EN VELAY,Généraliste,43,23,1,22,0,0,0,0
+CRIT LIMAS,Généraliste,69,13,1,12,0,0,0,0
+CRIT LYON,Tertiaire,69,20,0,19,1,0,0,0
+CRIT LYON BTP Second oeuvre,BTP,69,0,0,0,0,0,0,0
+CRIT LYON Événementiel,Evènementiel,69,0,0,0,0,0,0,0
+CRIT LYON Experts & Cadres,Experts & Cadres,69,0,0,0,0,0,0,0
+CRIT MONISTROL-SUR-LOIRE,Généraliste,43,5,0,0,5,0,0,0
+CRIT MONTELIMAR,Généraliste,26,18,0,18,0,0,0,0
+CRIT MONTLUCON,Généraliste,03,19,0,17,2,0,0,0
+CRIT RIOM,Industrie,63,26,0,24,2,0,0,0
+CRIT ROANNE,Généraliste,42,4,0,0,4,0,0,0
+CRIT SAINT QUENTIN FALLAVIER,Généraliste,38,3,0,0,3,0,0,0
+CRIT SAINT VULBAS Nucléaire,Généraliste,01,35,1,33,1,0,0,0
+CRIT THIERS,Généraliste,63,29,0,27,2,0,0,0
+CRIT VALENCE,Généraliste,26,29,1,28,0,0,0,0
+CRIT VICHY,Généraliste,03,20,0,18,2,0,0,0
+CRIT VIENNE,Généraliste,38,25,0,24,1,0,0,0
+CRIT VOIRON,Généraliste,38,11,0,11,0,0,0,0
